@@ -1,9 +1,12 @@
-import pandas as pd
 import numpy as np
 import re
 import csv
+import itertools
+from itertools import islice 
+
 
 dataset = 'test.csv'
+
 
 def get_subjects_info(data):
 
@@ -49,14 +52,34 @@ def get_subjects_info(data):
     subject_occurrence = dict(sorted(subject_occurrence.items(), key=lambda item: item[1], reverse=True))
 
     # print subject names with their occurrence(sorted)
-    print(subject_occurrence)
+    # print(subject_occurrence)
 
     # number of subjects = 172!
     # print(len(subject_occurrence))
 
     # print only the subject names
-    #print(subject_list)
+    # print(subject_list)
+
+    return subject_occurrence, subject_list
 
 
-get_subjects_info(dataset)
+# get_subjects_info(dataset)
 
+
+def get_top_subjects(numSubjects):
+
+    # get all subjects in dictionary form from the function above
+    all_subjects, _ = get_subjects_info(dataset)
+
+    # get the top N (most appeared) subjects
+    topSubjects = dict(itertools.islice(all_subjects.items(), numSubjects))
+
+    # print(topSubjects)
+
+    # only the most frequent subject names
+    # print(list(topSubjects.keys()))
+
+    return list(topSubjects.keys())
+
+
+get_top_subjects(20)
