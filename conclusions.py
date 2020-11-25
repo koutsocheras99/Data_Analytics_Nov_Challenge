@@ -1,7 +1,11 @@
 import pandas as pd
+import itertools
 from preprocessing import get_subjects_info
+from collections import Counter
+from itertools import islice 
 
-dataset = 'test.csv'
+
+dataset = 'cbse2014.csv'
 
 def findSiblingsNum(data):
 
@@ -16,7 +20,7 @@ def findSiblingsNum(data):
         # get the student name(row[2]) and specifically the last name (.split()[0])
         try:
             last_name = row[2].split()[0]
-        except AttributeError as e:
+        except AttributeError:
             pass
  
         if last_name not in l_names:
@@ -36,7 +40,7 @@ def findSiblingsNum(data):
 # findSiblingsNum(dataset)
 
 
-def names_manipulation(data):
+def names_grades_manipulation(data):
 
     df = pd.read_csv(data)
 
@@ -55,19 +59,83 @@ def names_manipulation(data):
         except AttributeError as e:
             pass
 
-        # append ALL last names in list
-        last_names.append(last_name)
+        student_overall_grade = 0
+        numSubjects = 0
 
         for index, subject in enumerate(row):
+   
             # if there is a column with a subject that belongs to the subjects(list) then get the grade(in percentage) which is 3 cells right
             if subject in subjects:
-                print(subject)
-                print(row[index+3])
 
-        # MENEI NA BGAZEIS GIA TON KATHE STUDENT TO MESO ORO KAI NA TO BAZEIS STO GRADE LIST. META THA KANEIS ITERATE LAST_NAME LIST KAI GRADE LIST(ME ZIP?)
-        # KAI THA ELEGXEIS AN EINAI ISA TA CONSECUTIVE CELLS STO LAST NAME LIST KAI META THA KOITAS TOUS EKASTOTE GRADE GIA PORISMA
+                # the subject grade is 3 cells right
+                subject_grade = row[index+3]
+                
+                try:
+                    student_overall_grade += int(subject_grade)
+                    numSubjects += 1
+                except ValueError:
+                    pass
 
-    # print(last_names)
+                # print(subject)
+                # print(subject_grade)
+        
+        try:
+            # in the grades list append the cgpa from all courses
+            grades.append(student_overall_grade/numSubjects) 
+            # append last name in last names list
+            last_names.append(last_name) 
+
+        except ZeroDivisionError:
+            pass
+
+        # print('\nLast Name: '+last_name)
+        # print(f'Student overall grade: {student_overall_grade}')
+        # print(f'Student number of subjects: {numSubjects}')
+   
+    # print(grades)   
+    # print(last_names)  
+
+    return last_names, grades
 
 
-names_manipulation(dataset)
+def figureNameSimilarity():
+
+    names, grades = names_grades_manipulation(dataset)
+    
+    overall_grade_dif = 0
+    grade_dif_list = []
+    numSiblings = 0
+
+    l_names = []
+
+    for index_name, next_name in zip(enumerate(names),names[1:]):
+
+        # print(index_name)
+        # print(next_name)
+
+        if index_name[1] not in l_names:
+            l_names.append(index_name[1])
+        else:
+
+            # get the differernce of grades between the consecutive students who have the same last name        
+            grade_dif = round(abs(grades[index_name[0]]-grades[index_name[0]-1]),1)
+
+            overall_grade_dif += grade_dif
+            numSiblings += 1
+
+            grade_dif_list.append(grade_dif)
+
+        # every 5 students clear the list (for memory efficiency reasons)
+        if index_name[0]%5==0:
+            l_names.clear()
+
+ 
+    mean_grade_dif = overall_grade_dif/numSiblings
+
+    # print('The mean-average grade difference(in 100) between all siblings is: {:.2f}'.format(mean_grade_dif))
+
+    # print(Counter(grade_dif_list))
+
+    return Counter(grade_dif_list)
+
+# figureNameSimilarity()
