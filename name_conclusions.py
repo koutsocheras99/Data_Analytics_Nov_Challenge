@@ -3,9 +3,8 @@ import itertools
 from preprocessing import get_subjects_info
 from collections import Counter
 from itertools import islice 
+from preprocessing import dataset
 
-
-dataset = 'cbse2014.csv'
 
 def findSiblingsNum(data):
 
@@ -56,7 +55,7 @@ def names_grades_manipulation(data):
         # get the student name(row[2]) and specifically the last name (.split()[0])
         try:
             last_name = row[2].split()[0]
-        except AttributeError as e:
+        except AttributeError:
             pass
 
         student_overall_grade = 0

@@ -1,11 +1,12 @@
 import numpy as np
+import pandas as pd
 import re
 import csv
 import itertools
 from itertools import islice 
 
 
-dataset = 'test.csv'
+dataset = 'cbse2014.csv'
 
 
 def get_subjects_info(data):
@@ -82,4 +83,5 @@ def get_top_subjects(numSubjects):
     return list(topSubjects.keys())
 
 
-get_top_subjects(20)
+# get_top_subjects(20)
+
