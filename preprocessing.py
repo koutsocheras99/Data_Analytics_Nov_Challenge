@@ -85,3 +85,32 @@ def get_top_subjects(numSubjects):
 
 # get_top_subjects(20)
 
+
+def get_arithmetic_grade_subjects():
+
+    topSubjects = get_top_subjects(10)
+
+    # from the top 10 subjects the below also have numerical grade (except from A1,A2,B1,B2,... grade format)
+    subject_list_with_numerical_grades = ['ENGLISHCORE', 'PHYSICALEDUCATION', 'MATHEMATICS', 'PHYSICS', 'CHEMISTRY', 'ECONOMICS', 'BUSINESSSTUDIES']
+
+    return subject_list_with_numerical_grades
+
+# get_arithmetic_grade_subjects()
+
+
+def subjectsOrderConclusions(data):
+
+    df = pd.read_csv(data)
+    
+    wrong_counter = 0
+
+    for index, subjects in enumerate(zip(df['Subject1'], df['Subject2'])):
+        
+        if subjects[0] != 'ENGLISHCORE' or subjects[1] != 'MATHEMATICS':
+            wrong_counter += 1
+            
+
+    # 742178 rows (~75%) is wrong if we take for default subject1 to be english and subject2 mathematics
+    print(wrong_counter)
+
+# subjectsOrderConclusions(dataset)

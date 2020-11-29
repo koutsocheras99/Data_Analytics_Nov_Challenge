@@ -1,5 +1,6 @@
 import pandas as pd
 import itertools
+import decimal
 from preprocessing import get_subjects_info
 from collections import Counter
 from itertools import islice 
@@ -122,9 +123,12 @@ def figureNameSimilarity():
             overall_grade_dif += grade_dif
             numSiblings += 1
 
+            # round the grade difference to next 1 (for example 8.8 ~> 9, 8.4 ~> 8)
+            grade_dif = decimal.Decimal(grade_dif).quantize(decimal.Decimal('1'),rounding=decimal.ROUND_HALF_UP)
+
             grade_dif_list.append(grade_dif)
 
-        # every 5 students clear the list (for memory efficiency reasons)
+            
         if index_name[0]%5==0:
             l_names.clear()
 
